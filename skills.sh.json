@@ -1,0 +1,14 @@
+{
+  "$schema": "https://skills.sh/schemas/skills.sh.schema.json",
+  "notGrouped": "bottom",
+  "groupings": [
+    {
+      "title": "Goal Loops",
+      "description": "Skills for designing and auditing long-running Codex goal prompts.",
+      "skills": [
+        "goal-loop-architect",
+        "goal-loop-auditor"
+      ]
+    }
+  ]
+}

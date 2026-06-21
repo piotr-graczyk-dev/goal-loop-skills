@@ -1,0 +1,4 @@
+interface:
+  display_name: "Goal Loop Auditor"
+  short_description: "Audit goal and loop prompts"
+  default_prompt: "Use $goal-loop-auditor to review this goal/loop prompt and identify missing facts, ambiguity, validation gaps, and a corrected version."
