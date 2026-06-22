@@ -1,6 +1,6 @@
 # Goal Loop Skills
 
-[![skills.sh](https://skills.sh/b/piotr-graczyk-dev/goal-loop-skills)](https://skills.sh/piotr-graczyk-dev/goal-loop-skills)
+[![skills.sh](https://img.shields.io/badge/skills.sh-goal--loop--skills-000000)](#install-with-skillssh)
 
 Reusable Codex skills for designing and auditing long-running agent prompts. The package contains two skills:
 
