@@ -1,6 +1,6 @@
 ---
 name: goal-loop-auditor
-description: Audit existing prompts for Codex goals, autonomous loops, research loops, execution loops, review loops, or long-running agent tasks. Use when the user asks to review, improve, harden, debug, score, or validate a goal/loop prompt for missing facts, ambiguous scope, weak validation rules, source-quality gaps, output-contract gaps, conflict-handling problems, stop-condition problems, or hidden assumptions.
+description: Audit existing prompts for goals, autonomous loops, research loops, execution loops, review loops, or long-running agent tasks in products that support goal/loop workflows. Use when the user asks to review, improve, harden, debug, score, or validate a goal/loop prompt for missing facts, ambiguous scope, weak validation rules, source-quality gaps, output-contract gaps, conflict-handling problems, stop-condition problems, or hidden assumptions.
 ---
 
 # Goal Loop Auditor

@@ -1,7 +1,7 @@
 {
   "name": "goal-loop-skills",
   "version": "0.1.0",
-  "description": "Codex skills for designing and auditing goal, loop, research, execution, and review prompts.",
+  "description": "Portable skills for designing and auditing goal, loop, research, execution, and review prompts.",
   "author": {
     "name": "Piotr Graczyk",
     "url": "https://github.com/piotr-graczyk-dev"
@@ -19,8 +19,8 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Goal Loop Skills",
-    "shortDescription": "Design and audit Codex goal prompts",
-    "longDescription": "A pair of reusable Codex skills for turning rough task intent into launch-ready goal prompts and auditing existing goal or loop prompts before execution.",
+    "shortDescription": "Design and audit goal prompts",
+    "longDescription": "A pair of reusable skills for turning rough task intent into launch-ready goal prompts and auditing existing goal or loop prompts before execution.",
     "developerName": "Piotr Graczyk",
     "category": "Productivity",
     "capabilities": [

@@ -4,7 +4,7 @@
   "groupings": [
     {
       "title": "Goal Loops",
-      "description": "Skills for designing and auditing long-running Codex goal prompts.",
+      "description": "Skills for designing and auditing long-running goal and loop prompts.",
       "skills": [
         "goal-loop-architect",
         "goal-loop-auditor"

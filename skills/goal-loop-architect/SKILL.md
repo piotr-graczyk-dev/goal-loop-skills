@@ -1,6 +1,6 @@
 ---
 name: goal-loop-architect
-description: Build high-quality prompts for launching Codex goals, autonomous loops, research loops, execution loops, review loops, or long-running agent tasks. Use when the user wants to create, improve, or normalize a goal/loop prompt with reliable structure, explicit scope, source rules, validation rules, conflict handling, output contract, and stop condition; ask clarifying questions first when required facts are missing.
+description: Build high-quality prompts for launching goals, autonomous loops, research loops, execution loops, review loops, or long-running agent tasks in products that support goal/loop workflows. Use when the user wants to create, improve, or normalize a goal/loop prompt with reliable structure, explicit scope, source rules, validation rules, conflict handling, output contract, and stop condition; ask clarifying questions first when required facts are missing.
 ---
 
 # Goal Loop Architect
