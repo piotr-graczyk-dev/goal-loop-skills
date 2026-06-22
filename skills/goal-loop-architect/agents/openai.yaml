@@ -1,4 +1,4 @@
 interface:
   display_name: "Goal Loop Architect"
   short_description: "Structure prompts for goal loops"
-  default_prompt: "Use $goal-loop-architect to turn this research or execution goal into a complete goal/loop prompt."
+  default_prompt: "Use $goal-loop-architect to turn this goal or loop request into a complete launch prompt."

@@ -1,126 +1,104 @@
 ---
 name: goal-loop-architect
-description: Build high-quality prompts for launching goals, autonomous loops, research loops, execution loops, review loops, or long-running agent tasks in products that support goal/loop workflows. Use when the user wants to create, improve, or normalize a goal/loop prompt with reliable structure, explicit scope, source rules, validation rules, conflict handling, output contract, and stop condition; ask clarifying questions first when required facts are missing.
+description: Build launch-ready prompts for goals, autonomous loops, research loops, execution loops, review loops, monitoring loops, or long-running agent tasks. Use when the user wants to create, improve, or normalize a goal/loop prompt with explicit scope, evidence rules, validation, output contract, conflict handling, stop condition, and one-at-a-time clarification when required facts are missing.
 ---
 
 # Goal Loop Architect
 
-## Purpose
+Turn rough intent into a self-contained prompt another agent can run without hidden context. Optimize for verifiable work, bounded scope, and early clarification.
 
-Turn a rough task intent into a launch-ready goal/loop prompt. Optimize for unambiguous execution, verifiable outputs, and early clarification of missing facts.
+## Non-Negotiable
+
+If a blocking fact is missing, ask exactly one next question. Include `Recommended answer:`. Never return a numbered list of multiple questions.
+
+Before asking, inspect or infer from available context: the user prompt, pasted artifacts, repo files, docs, current branch, issues, or other provided sources. Do not ask for facts you can discover safely.
+
+Recommended answers should preserve momentum without inventing concrete facts. Use generic defaults like `current repo`; use `current branch` only for branch-scoped execution or review. Do not name a specific repo, org, path, branch, or product as the target unless the user supplied it or the task clearly says to use the current workspace. Prefer soft defaults over hard exclusions, and mark broad defaults as assumptions.
+
+Launch prompts should be compact. Preserve every required contract and the fenced `text` output format, but avoid repeating the same rule across `RULES`, `METHOD`, `STOP CONDITION`, and `DONE CRITERIA`.
 
 ## Workflow
 
-1. Classify the loop as `research`, `execution`, `review`, `monitoring`, or `mixed`.
-2. Run the Fact Gate before drafting the prompt.
-3. Ask concise clarification questions if blocking facts are missing.
-4. Load the relevant reference files listed below when they match the request.
-5. Draft the prompt only after the required facts are known or explicitly marked as assumptions.
-6. Keep the final prompt self-contained so another agent can run it without hidden context.
-
-## References
-
-- Read `references/prompt-patterns.md` when drafting `research`, `execution`, or `review` loops.
-- Read `references/quality-rubric.md` before finalizing any launch prompt.
-- Read `references/question-bank.md` when blocking facts are missing or the request is vague.
-- Read `references/examples.md` when the user asks for examples or when a rough prompt needs substantial reshaping.
+1. Classify the loop: `research`, `execution`, `review`, `monitoring`, or `mixed`.
+2. Load only relevant references:
+   - `references/prompt-patterns.md` for research, execution, or review loops.
+   - `references/question-bank.md` when a blocking fact is missing.
+   - `references/quality-rubric.md` before returning a launch prompt.
+   - `references/examples.md` only when examples or substantial reshaping are needed.
+3. Run the Fact Gate in order.
+4. If the earliest blocking fact is missing, return one clarification.
+5. After an answer, inspect newly available context before asking another question.
+6. Otherwise return the launch prompt.
 
 ## Fact Gate
 
-Require these facts before producing the final prompt:
+Know these facts before producing a final prompt. When several are missing, ask only about the earliest one that cannot be inferred.
 
-- `PROJECT`: project, repo, product, domain, or target system.
-- `GOAL`: one-sentence deliverable, not a topic or vague direction.
-- `SCOPE`: what is included and what is explicitly out.
-- `RULES`: what counts as a verified finding, valid row, accepted fix, or completed step.
+- `PROJECT`: repo, product, domain, target system, branch, or artifact.
+- `GOAL`: one-sentence deliverable, not a broad topic.
+- `SCOPE`: included work and explicit exclusions.
+- `RULES`: observable acceptance, verification, or validity criteria.
 - `SOURCES`: allowed evidence sources and source hierarchy.
-- `OUTPUT`: artifact type, count, naming, location, schema, and formatting requirements.
-- `ON CONFLICT`: how to handle contradictory evidence or requirements.
-- `STOP CONDITION`: when to halt and report instead of guessing.
+- `OUTPUT`: artifact type, location/name, count, schema, or required sections.
+- `ON CONFLICT`: how to handle contradictory evidence or instructions.
+- `STOP CONDITION`: when to halt instead of guessing.
 
-For long-running loops, also establish:
+For long-running loops also define `CHECKPOINTS`, `BUDGET`, `PERMISSIONS`, and `DONE CRITERIA`.
 
-- `CHECKPOINTS`: when to report progress or request review.
-- `BUDGET`: time, token, depth, file count, source count, or iteration limits.
-- `PERMISSIONS`: actions that require approval, such as network access, writes, commits, schema changes, or production operations.
-- `DONE CRITERIA`: how the user can tell the loop actually succeeded.
+## Output
 
-## Clarification Policy
-
-Ask questions before drafting when any missing fact would change execution materially. Prefer 3-6 targeted questions, grouped by decision area.
-
-Do not ask about facts that can be safely inferred from provided context. When making a non-blocking assumption, write it into the prompt under `ASSUMPTIONS`.
-
-Do not emit a final launch prompt if any of these are missing:
-
-- Deliverable
-- Scope boundary
-- Validation rule
-- Output contract
-- Stop condition
-
-## Prompt Standard
-
-Use this structure unless the user explicitly requests another format:
+Return one of these shapes.
 
 ```text
+Clarification needed
+
+[Ask exactly one next blocking question.]
+
+Recommended answer: [your recommended default or the answer most likely to preserve momentum.]
+```
+
+If useful, add one short `I will inspect/use:` line before the question naming context you can check first.
+
+```text
+Launch prompt
+
 # PROJECT: [name / repo / domain]
 
-GOAL: [one sentence: the deliverable, not the topic]
-
+GOAL: [one sentence]
 MODE: [research | execution | review | monitoring | mixed]
 
 CONTEXT:
-- [brief facts the agent needs to know]
+- [facts needed by another agent]
 
 SCOPE:
 - In: [included work]
 - Out: [explicit exclusions]
 
 RULES:
-- [validation rules: what counts as verified, accepted, or complete]
+- [observable acceptance or verification rules]
 
 SOURCES:
 - [allowed sources in priority order]
-- [disallowed sources, if relevant]
 
 METHOD:
-- [ordered workflow the loop should follow]
+- [ordered workflow]
 
 OUTPUT:
-- Format: [file/message/table/PR/report/etc.]
-- Location/name: [path or naming rules]
+- Format: [message/file/table/PR/report/etc.]
+- Location/name: [path or naming rule]
 - Required fields/sections: [schema or outline]
 
 ON CONFLICT:
-- Flag the conflict with evidence and do not resolve silently.
+- [how to flag contradictions]
 
 STOP CONDITION:
-- Halt and report when [specific uncertainty, missing access, source conflict, risk, or budget limit].
+- [specific halt cases]
 
 CHECKPOINTS:
-- [progress cadence, review gates, or omit if not needed]
+- [if needed]
 
 DONE CRITERIA:
-- [observable completion criteria]
+- [observable success]
 ```
 
-## Quality Bar
-
-Make every field operational, then cross-check against `references/quality-rubric.md`:
-
-- Replace abstract words like "better", "analyze", or "research" with observable actions.
-- Convert preferences into rules where possible.
-- State source quality explicitly: primary, official, peer-reviewed, internal docs, codebase truth, or user-provided artifacts.
-- Include negative scope to prevent drift.
-- Include failure handling for missing access, stale data, contradictions, and low-confidence evidence.
-- Avoid hidden dependencies on prior conversation unless the final prompt quotes or summarizes the needed facts.
-
-## Output Behavior
-
-Return one of two outputs:
-
-1. `Clarifications needed` with the minimum blocking questions.
-2. `Launch prompt` with the completed prompt in a fenced text block.
-
-If the user asks for both, include clarifications first and then a draft marked `Draft with assumptions`.
+Use `ASSUMPTIONS` only for non-blocking assumptions. Do not emit a final launch prompt when deliverable, scope boundary, validation rule, output contract, or stop condition is blocking-missing.

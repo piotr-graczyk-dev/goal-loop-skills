@@ -1,91 +1,58 @@
 ---
 name: goal-loop-auditor
-description: Audit existing prompts for goals, autonomous loops, research loops, execution loops, review loops, or long-running agent tasks in products that support goal/loop workflows. Use when the user asks to review, improve, harden, debug, score, or validate a goal/loop prompt for missing facts, ambiguous scope, weak validation rules, source-quality gaps, output-contract gaps, conflict-handling problems, stop-condition problems, or hidden assumptions.
+description: Audit goal, autonomous loop, research loop, execution loop, review loop, monitoring loop, or long-running agent prompts. Use when the user asks to review, harden, score, debug, or improve a goal/loop prompt for missing facts, ambiguous scope, weak validation, source-quality gaps, output-contract gaps, conflict-handling problems, stop-condition problems, permissions, or hidden assumptions.
 ---
 
 # Goal Loop Auditor
 
-## Purpose
-
-Evaluate an existing goal/loop prompt before it launches. Prioritize defects that would cause wrong work, unverifiable results, scope drift, unsafe action, or premature guessing.
+Evaluate whether a goal/loop prompt is safe to launch. Prioritize defects that would cause wrong work, unverifiable results, scope drift, unsafe action, or guessing.
 
 ## Workflow
 
-1. Identify the loop type: `research`, `execution`, `review`, `monitoring`, or `mixed`.
-2. Check whether the prompt contains all required launch fields.
-3. Classify gaps by severity.
-4. Ask for missing blocking facts when a corrected prompt cannot be produced safely.
-5. Produce a corrected prompt only when remaining assumptions are explicit and non-blocking.
-
-## Required Fields
-
-Audit for these fields:
-
-- `PROJECT`: project, repo, product, domain, or target system.
-- `GOAL`: one-sentence deliverable, not a topic.
-- `MODE`: research, execution, review, monitoring, or mixed.
-- `CONTEXT`: minimum facts needed by another agent.
-- `SCOPE`: explicit included and excluded work.
-- `RULES`: what counts as verified, valid, accepted, or complete.
-- `SOURCES`: allowed and disallowed evidence sources when relevant.
-- `METHOD`: execution path or research method.
-- `OUTPUT`: artifact type, location or naming, sections, schema, and format.
-- `ON CONFLICT`: how to handle contradictory evidence or instructions.
-- `STOP CONDITION`: when to halt instead of guessing.
-- `DONE CRITERIA`: observable success criteria.
-
-For execution loops, also audit `PERMISSIONS` for actions such as network access, file writes, dependencies, migrations, commits, pushes, production operations, and destructive commands.
+1. Identify loop type: `research`, `execution`, `review`, `monitoring`, or `mixed`.
+2. Check launch fields: `PROJECT`, `GOAL`, `MODE`, `CONTEXT`, `SCOPE`, `RULES`, `SOURCES`, `METHOD`, `OUTPUT`, `ON CONFLICT`, `STOP CONDITION`, `DONE CRITERIA`.
+3. For execution loops, also check `PERMISSIONS` for writes, dependencies, migrations, commits, pushes, network, secrets, production, and destructive actions.
+4. Report only material findings. Group related missing fields instead of listing every absent label separately.
+5. Produce a corrected prompt only when assumptions are explicit and non-blocking.
 
 ## Severity
 
-Use this scale:
+- `Blocking`: should not launch until fixed.
+- `High`: likely wrong, unsafe, or unverifiable.
+- `Medium`: likely inefficient or inconsistent.
+- `Low`: polish only.
 
-- `Blocking`: the prompt should not launch until fixed.
-- `High`: likely to cause wrong, unsafe, or unverifiable work.
-- `Medium`: likely to cause inefficiency, ambiguity, or inconsistent output.
-- `Low`: clarity or polish improvement.
+Missing `GOAL`, `SCOPE`, `RULES`, `OUTPUT`, or `STOP CONDITION` is `Blocking`.
 
-Treat missing `GOAL`, `SCOPE`, `RULES`, `OUTPUT`, or `STOP CONDITION` as `Blocking`.
+## Audit Standard
 
-## Audit Checks
+Check that the prompt has a concrete deliverable, explicit exclusions, observable validation, source rules, output schema, conflict handling, halt cases, no hidden conversation dependency, and checkpoints or budget for long-running work. Fold conflict, checkpoint, and budget gaps into grouped findings unless they are the primary launch risk.
 
-Check for:
+If blocking facts prevent a safe corrected prompt, ask exactly one next blocking question with `Recommended answer:` instead of listing every missing fact.
 
-- Deliverable names a concrete artifact or outcome.
-- Scope includes explicit exclusions.
-- Validation rules are observable and testable.
-- Sources are restricted enough for the task.
-- Output contract can be followed without guessing.
-- Conflict handling prevents silent reconciliation.
-- Stop condition names concrete halt cases.
-- Permissions are explicit for risky actions.
-- Prompt does not depend on hidden prior conversation.
-- Long-running work has checkpoints or budget limits.
+## Output
 
-## Output Format
-
-Return this structure:
+Return this shape:
 
 ````text
 Audit result: [Ready | Needs revision | Do not launch]
 
 Findings:
-- [Severity] [Field]: [problem]
+- [Severity] [Field/group]: [problem]
   Impact: [why it matters]
   Fix: [specific change]
 
-Missing blocking facts:
-- [question or fact needed]
+Next blocking question:
+[Ask exactly one question when a safe correction needs user input.]
+Recommended answer: [default that preserves momentum without inventing concrete facts.]
 
 Assumptions:
-- [only non-blocking assumptions used in corrected prompt]
+- [non-blocking assumptions only]
 
 Corrected prompt:
 ```text
-[only include when safe to draft]
+[include only when safe]
 ```
 ````
 
-If the prompt has no material issues, say `Audit result: Ready` and list any residual risks.
-
-If blocking facts are missing, do not invent them. Provide a partial corrected prompt only when the user explicitly asks for a draft with assumptions.
+Keep findings to the smallest set that changes launch safety. If there are no material issues, return `Audit result: Ready` and residual risks only.

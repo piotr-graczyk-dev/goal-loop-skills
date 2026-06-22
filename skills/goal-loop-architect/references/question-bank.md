@@ -1,45 +1,20 @@
 # Question Bank
 
-Ask only the minimum blocking questions. Prefer 3-6 questions, grouped by decision area.
+Use this only to choose the single next blocking question. Do not ask a batch. Prefer the first unanswered decision in this order.
 
-## Deliverable
+1. Target: Which project, repo, product, source, branch, date range, market, or platform should this loop operate on?
+2. Deliverable: What exact artifact or outcome should the loop produce?
+3. Scope: What is included, and what must be avoided even if related?
+4. Rules: What counts as verified, valid, accepted, important, or complete?
+5. Sources: Which evidence sources are allowed, required, or forbidden? Is recency required?
+6. Output: What format, location, naming, fields, or sections are required?
+7. Permissions: Can the loop browse, edit files, install dependencies, run migrations, commit, push, create PRs, post messages, or touch production?
+8. Stop: What missing access, conflict, validation failure, risk, or budget limit should halt the loop?
 
-- What exact artifact should the loop produce?
-- Should the result be a final answer, file, table, patch, PR, checklist, or plan?
-- What would make the deliverable unacceptable?
+For each question include:
 
-## Scope
+```text
+Recommended answer: [generic default that preserves momentum without inventing concrete facts]
+```
 
-- What is explicitly in scope?
-- What should the agent avoid even if it looks related?
-- Is this limited to a specific repo, branch, issue, file set, date range, market, language, or platform?
-
-## Validation
-
-- What counts as a verified finding, valid row, accepted fix, or completed step?
-- Which commands, tests, source checks, or manual checks must pass?
-- Should uncertain findings be excluded or included with confidence labels?
-
-## Sources
-
-- Are only primary or official sources allowed?
-- Are aggregators, blog posts, AI summaries, forum posts, or vendor pages allowed?
-- Is recency important? If yes, what date range or freshness requirement applies?
-
-## Output
-
-- What format should the output use?
-- Where should files be written, and how should they be named?
-- What fields or sections are required?
-
-## Permissions
-
-- Can the loop browse the web or call networked tools?
-- Can it edit files, install dependencies, run migrations, commit, push, or create PRs?
-- What actions require the user to approve first?
-
-## Stop Conditions
-
-- When should the agent halt and report instead of guessing?
-- What missing access, contradictory evidence, failing validation, or budget limit should stop the loop?
-- Should the agent return partial results if the stop condition is hit?
+Use soft defaults: `current repo`, `current branch` only for branch-scoped work, `official or primary sources first`, `halt on missing access or contradictory evidence`, and `report partial results with blockers` only when they fit the task.
